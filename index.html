@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Up & Down 게임 🎮</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .game-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        input[type="number"] {
+            width: 80px;
+            padding: 10px;
+            font-size: 1.2rem;
+            text-align: center;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-right: 10px;
+            outline: none;
+        }
+        input[type="number"]:focus {
+            border-color: #007bff;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 1rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            min-height: 40px;
+        }
+        .restart-btn {
+            display: none;
+            background-color: #28a745;
+            margin-top: 15px;
+        }
+        .restart-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <h1>🎮 Up & Down 게임</h1>
+    <p>🤖 컴퓨터가 <b>1부터 20 사이</b>의 숫자를 생각했습니다. 맞춰보세요!</p>
+    
+    <div style="margin-top: 25px;">
+        <input type="number" id="guessInput" min="1" max="20" placeholder="?">
+        <button onclick="checkGuess()">정답 확인</button>
+    </div>
+
+    <div class="message" id="message"></div>
+    <button class="restart-btn" id="restartBtn" onclick="initGame()">다시 시작하기 🔄</button>
+</div>
+
+<script>
+    let secretNumber;
+    
+    // 게임 초기화 함수 (컴퓨터가 랜덤 숫자를 뽑음)
+    function initGame() {
+        secretNumber = Math.floor(Math.random() * 20) + 1;
+        document.getElementById("message").innerText = "";
+        document.getElementById("message").style.color = "#333";
+        document.getElementById("guessInput").value = "";
+        document.getElementById("guessInput").disabled = false;
+        document.getElementById("restartBtn").style.display = "none";
+    }
+
+    // 사용자가 입력한 정답 확인 함수
+    function checkGuess() {
+        const inputElement = document.getElementById("guessInput");
+        const messageElement = document.getElementById("message");
+        const userGuess = parseInt(inputElement.value);
+
+        // 예외 처리 (숫자를 입력하지 않았거나 범위를 벗어난 경우)
+        if (isNaN(userGuess) || userGuess < 1 || userGuess > 20) {
+            messageElement.innerText = "⚠️ 1부터 20 사이의 올바른 숫자를 입력하세요!";
+            messageElement.style.color = "#dc3545";
+            return;
+        }
+
+        // 숫자 비교 로직
+        if (userGuess < secretNumber) {
+            messageElement.innerText = "☝️ Up! 더 큰 숫자예요.";
+            messageElement.style.color = "#fd7e14";
+        } else if (userGuess > secretNumber) {
+            messageElement.innerText = "👇 Down! 더 작은 숫자예요.";
+            messageElement.style.color = "#17a2b8";
+        } else {
+            messageElement.innerText = "🎉 정답입니다! 멋져요! 👏";
+            messageElement.style.color = "#28a745";
+            inputElement.disabled = true; // 정답을 맞추면 입력창을 막음
+            document.getElementById("restartBtn").style.display = "inline-block"; // 다시 시작 버튼 노출
+        }
+    }
+
+    // 엔터키를 눌러도 정답이 확인되도록 설정
+    document.getElementById("guessInput").addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            checkGuess();
+        }
+    });
+
+    // 페이지가 로드되면 최초로 게임을 시작합니다.
+    initGame();
+</script>
+
+</body>
+</html>
